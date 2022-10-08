@@ -14,16 +14,17 @@ const mutations = {
     setWizkids: function (state, wizkids) {
         state.wizkids = wizkids
     },
-    addWizkid:  function(state,newWizkid){
-        state.wizkids = [newWizkid,...state.wizkids]
+    addWizkid: function (state, newWizkid) {
+        return state.wizkids.unshift(newWizkid)
     },
-    updateWizkid:  function(state,updatedWizkid){
-        state.wizkids.forEach(wizkid => {
-             if(wizkid.id ==  updatedWizkid.id){
-                wizkid=updatedWizkid;
-             }
+    updateWizkid: function (state, updatedWizkid) {
+        state.wizkids.forEach((wizkid, index) => {
+            if (wizkid.id == updatedWizkid.id) {
+                state.wizkids[index] = updatedWizkid;
+            }
         })
-    }
+    },
+    removeWizkid: (state, id) => state.wizkids = state.wizkids.filter(wizkid => wizkid.id != id)
 }
 const actions = {
     fetchWizkidsForGuest: function ({ commit }) {
@@ -33,29 +34,73 @@ const actions = {
                 commit("setWizkids", data);
             })
     },
-    addWizkid: function (newWizkid,{ commit }) {
-        const formData=FormDataHelper(newWizkid);
-        fetch(envirement.apiUrl + "wizkid/create",{
-            method:"POST",
-            body:formData
+    fetchWizkidsForUser: function ({ commit }) {
+        fetch(envirement.apiUrl + "wizkid/list-full", {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("access_token")
+            }
         })
             .then(response => response.json())
             .then(data => {
                 commit("setWizkids", data);
             })
     },
-    editWizkid: function (wizkidToUpdate,{ commit }) {
-        const formData=FormDataHelper(wizkidToUpdate);
-        fetch(envirement.apiUrl + "wizkid/update/"+wizkidToUpdate.id,{
-            method:"POST",
-            body:{
-                ...formData,
-                _method:"PUT"// by passed Put request problems
+
+    addWizkid: function ({ commit }, newWizkid) {
+        const formData = FormDataHelper(newWizkid);
+        fetch(envirement.apiUrl + "wizkid/create", {
+            method: "POST",
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                commit("addWizkid", data);
+            })
+    },
+    fire: function (context, wizkidToFire) {
+        fetch(envirement.apiUrl + "wizkid/fire/" + wizkidToFire.id, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("access_token")
             }
+        })
+            .then(response => response.json())
+            .then(() => {
+                context.dispatch("fetchWizkidsForUser");
+            })
+    },
+    unfire: function (context , wizkidToUnFire) {
+        fetch(envirement.apiUrl + "wizkid/unfire/" + wizkidToUnFire.id, {
+            method: "GET",
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("access_token")
+            }
+        })
+            .then(response => response.json())
+            .then(() => {
+                context.dispatch("fetchWizkidsForUser");
+            })
+    },
+    editWizkid: function ({ commit }, wizkidToUpdate) {
+        const formData = FormDataHelper(wizkidToUpdate);
+        formData.set("_method", "PUT")
+        fetch(envirement.apiUrl + "wizkid/update/" + wizkidToUpdate.id, {
+            method: "POST",
+            body: formData
         })
             .then(response => response.json())
             .then(data => {
                 commit("updateWizkid", data);
+            })
+    },
+    deleteWizkid: function ({ commit }, wizkidToDelete) {
+
+        fetch(envirement.apiUrl + "wizkid/delete/" + wizkidToDelete.id, {
+            method: "delete",
+        })
+            .then(response => response.json())
+            .then(() => {
+                commit("removeWizkid", wizkidToDelete.id);
             })
     },
 }

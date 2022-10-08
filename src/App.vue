@@ -1,16 +1,24 @@
 <template>
-  <div id="app">
-       <router-view></router-view>
+  <div id="app" data-app>
+    <v-app-bar elevation="4">
+      <router-link v-if="!getIsAuth" class="link" to="/login"
+        >Login to use all features</router-link
+      >
+    </v-app-bar>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
+import {  mapGetters } from "vuex";
 
 export default {
-  name: 'App',
-  components: {
-  }
-}
+  computed:{
+   ...mapGetters(["getIsAuth"]),
+  },
+  name: "App",
+  components: {},
+};
 </script>
 
 <style>

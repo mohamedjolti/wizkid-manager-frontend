@@ -8,7 +8,7 @@ import Login from "./src/components/Login";
 Vue.use(VueRouter);
 
 const routes=[
-    {path:"/wizkid-full-control",component:WizkidFullControl},
+    {path:"/wizkid-full-control",name:"wizkid-full-control",component:WizkidFullControl},
     {path:"/login",component:Login},
     {path:"/" ,component : WizkidControl}
 
