@@ -18,6 +18,7 @@ const mutations = {
         state.token = token
     },
 
+
 }
 const actions = {
     login: function ({ commit }, data) {

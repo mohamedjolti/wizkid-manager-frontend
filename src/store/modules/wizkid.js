@@ -2,7 +2,7 @@ import { envirement } from "../../../envirement"
 import { FormDataHelper } from "../../helpers/FormDataHelper"
 
 const state = {
-    wizkids: []
+    wizkids: [],
 }
 
 const getters = {
@@ -103,6 +103,30 @@ const actions = {
                 commit("removeWizkid", wizkidToDelete.id);
             })
     },
+    filterForGuest: function ({ commit },role) {
+        fetch(envirement.apiUrl + "wizkid/filter-role-guest/"+role, {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("access_token")
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                commit("setWizkids", data);
+            })
+    },
+    filterForUser: function ({ commit },role) {
+        fetch(envirement.apiUrl + "wizkid/filter-role-user/"+role, {
+            headers: {
+                "Authorization": "Bearer " + localStorage.getItem("access_token")
+            }
+        })
+            .then(response => response.json())
+            .then(data => {
+                commit("setWizkids", data);
+            })
+    },
+
+ 
 }
 export default {
     state, getters, actions, mutations
