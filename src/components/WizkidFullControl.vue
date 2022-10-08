@@ -120,14 +120,14 @@
         <v-icon small @click="deleteItem(item)"> mdi-delete </v-icon>
         <v-icon
           small
-          v-if="getIsAuth && item.is_fired == 0"
+          v-if="getIsAuth && item.is_fired == 0 && getUser.id !== item.id"
           @click="fire(item)"
         >
           fire
         </v-icon>
         <v-icon
           small
-          v-if="getIsAuth && item.is_fired == 1"
+          v-if="getIsAuth && item.is_fired == 1 && getUser.id !== item.id"
           @click="unfire(item)"
         >
           unfire
@@ -184,7 +184,7 @@ export default {
   }),
 
   computed: {
-    ...mapGetters(["getWizkids", "getIsAuth"]),
+    ...mapGetters(["getWizkids", "getIsAuth","getUser"]),
     formTitle() {
       return this.editedIndex === -1 ? "New Item" : "Edit Item";
     },
