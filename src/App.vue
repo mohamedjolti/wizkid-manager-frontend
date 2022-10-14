@@ -1,19 +1,24 @@
 <template>
-  <div id="app">
-    <img alt="Vue logo" src="./assets/logo.png">
-    <HelloWorld msg="Welcome to Your Vue.js App"/>
+  <div id="app" data-app>
+    <v-app-bar elevation="4">
+      <router-link v-if="!getIsAuth" class="link" to="/login"
+        >Login to use all features</router-link
+      >
+    </v-app-bar>
+    <router-view></router-view>
   </div>
 </template>
 
 <script>
-import HelloWorld from './components/HelloWorld.vue'
+import {  mapGetters } from "vuex";
 
 export default {
-  name: 'App',
-  components: {
-    HelloWorld
-  }
-}
+  computed:{
+   ...mapGetters(["getIsAuth"]),
+  },
+  name: "App",
+  components: {},
+};
 </script>
 
 <style>
